@@ -9,7 +9,10 @@ description = "BAIT: Behavioral Analytics and Intrusion Triage endpoint detectio
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Apache-2.0" }
-authors = [{ name = "BAIT Contributors" }]
+authors = [
+  { name = "Sunil Gentyala" },
+  { name = "Suresh Kumar Darisi" },
+]
 keywords = ["edr", "ids", "incident-response", "mitre-attck", "endpoint-security"]
 dependencies = [
   "fastapi>=0.115,<1",

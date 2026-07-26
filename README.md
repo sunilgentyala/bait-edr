@@ -18,6 +18,11 @@
 > [!IMPORTANT]
 > BAIT is a security-focused development preview. It is suitable for research, lab validation, rule development, and controlled pilots. It is not a replacement for a supported enterprise EDR platform.
 
+## Authors
+
+- Primary and corresponding author: Sunil Gentyala
+- Secondary author: Suresh Kumar Darisi
+
 ## What BAIT does
 
 BAIT collects endpoint observations, normalizes them into a portable event contract, evaluates readable YAML detections, correlates repeated activity, stores evidence, and exposes policy-controlled response actions through a CLI and API.
