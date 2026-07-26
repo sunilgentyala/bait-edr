@@ -1,0 +1,25 @@
+BAIT EDR 0.2.0 verification summary
+Date: 2026-07-25
+Environment: Linux, Python 3.13.5, Graphviz 2.42.4
+
+PASS  Unit and integration tests: 26
+PASS  Coverage gate: 76.85% >= 75%
+PASS  Python compileall
+PASS  Built-in rule validation: 5 rules
+PASS  Synthetic demo: 2 expected alerts
+PASS  Live collection: 31 events, 0 alerts, audit mode
+PASS  Editable package installation
+PASS  Wheel build and isolated installation
+PASS  Installed wheel default rules: 5 rules found outside repository
+PASS  Diagram source parity: 3 diagrams
+PASS  GitHub Pages structural and asset validation
+PASS  API health, authentication, ingestion, alert retrieval, and response tests
+
+LOCAL LIMITATION
+Ruff was not available in the execution environment or its package index. The
+GitHub Actions CI workflow enforces Ruff after publication.
+
+SECURE DEFAULTS OBSERVED
+response_mode=audit
+allow_process_termination=false
+allow_file_quarantine=false

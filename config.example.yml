@@ -1,0 +1,36 @@
+agent:
+  id: bait-local-agent
+  interval_seconds: 10
+  database_path: ./data/bait.db
+  rules_path: ./rules/builtin.yml
+  log_level: INFO
+
+api:
+  bind_host: 127.0.0.1
+  bind_port: 8765
+  token_env: BAIT_API_TOKEN
+
+response:
+  mode: audit
+  quarantine_directory: ./data/quarantine
+  allow_process_termination: false
+  allow_file_quarantine: false
+  protected_process_names:
+    - system
+    - systemd
+    - init
+    - csrss.exe
+    - wininit.exe
+    - services.exe
+    - lsass.exe
+    - bait
+    - python
+  allowed_quarantine_roots:
+    - ./samples
+    - ./tmp
+
+privacy:
+  capture_command_line: true
+  capture_username: true
+  redact_environment_variables: true
+  event_retention_days: 30

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+  <title id="title">BAIT EDR social preview</title>
+  <desc id="desc">Behavioral Analytics and Intrusion Triage, explain the signal, preserve the evidence, gate the response.</desc>
+  <defs>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientTransform="translate(1020 90) rotate(135) scale(540 430)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#79F2BD" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#06100D" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="panel" x1="720" y1="100" x2="1170" y2="535" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#123126"/>
+      <stop offset="1" stop-color="#07110E"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="640" fill="#06100D"/>
+  <rect width="1280" height="640" fill="url(#glow)"/>
+  <path d="M0 558H1280" stroke="#244C40"/>
+  <path d="M80 74H1200" stroke="#79F2BD" stroke-opacity=".16"/>
+  <g transform="translate(82 94)">
+    <path d="M52 0 98 26v52l-46 26L6 78V26L52 0Z" fill="#0E2A20" stroke="#79F2BD" stroke-width="3"/>
+    <path d="m31 35 21-12 21 12v25L52 72 31 60V35Z" fill="none" stroke="#FFE07D" stroke-width="3"/>
+    <circle cx="52" cy="47" r="5" fill="#79F2BD"/>
+  </g>
+  <text x="203" y="139" fill="#79F2BD" font-family="Arial, sans-serif" font-size="44" font-weight="800" letter-spacing="5">BAIT</text>
+  <text x="339" y="139" fill="#9AB9AE" font-family="Arial, sans-serif" font-size="20" font-weight="700" letter-spacing="4">EDR</text>
+  <text x="82" y="235" fill="#EFFFF9" font-family="Arial, sans-serif" font-size="58" font-weight="800" letter-spacing="-2">Explain the signal.</text>
+  <text x="82" y="305" fill="#EFFFF9" font-family="Arial, sans-serif" font-size="58" font-weight="800" letter-spacing="-2">Preserve the evidence.</text>
+  <text x="82" y="375" fill="#EFFFF9" font-family="Arial, sans-serif" font-size="58" font-weight="800" letter-spacing="-2">Gate the response.</text>
+  <text x="84" y="437" fill="#9AB9AE" font-family="Arial, sans-serif" font-size="23">Behavioral Analytics and Intrusion Triage</text>
+  <g transform="translate(782 136)">
+    <rect width="408" height="358" rx="18" fill="url(#panel)" stroke="#315C50" stroke-width="2"/>
+    <path d="M0 54H408" stroke="#315C50"/>
+    <circle cx="25" cy="27" r="5" fill="#315C50"/>
+    <circle cx="43" cy="27" r="5" fill="#FFE07D"/>
+    <circle cx="61" cy="27" r="5" fill="#79F2BD"/>
+    <text x="326" y="33" fill="#FFE07D" font-family="monospace" font-size="13" font-weight="700">AUDIT</text>
+    <text x="28" y="93" fill="#79F2BD" font-family="monospace" font-size="12" font-weight="700" letter-spacing="2">DETECTION</text>
+    <text x="28" y="132" fill="#EFFFF9" font-family="Arial, sans-serif" font-size="22" font-weight="700">Explainable alert</text>
+    <path d="M28 157H380" stroke="#315C50"/>
+    <text x="28" y="190" fill="#9AB9AE" font-family="monospace" font-size="12">severity</text>
+    <text x="284" y="190" fill="#FF9C7D" font-family="monospace" font-size="12" font-weight="700">high</text>
+    <text x="28" y="225" fill="#9AB9AE" font-family="monospace" font-size="12">ATT&amp;CK</text>
+    <text x="284" y="225" fill="#EFFFF9" font-family="monospace" font-size="12" font-weight="700">T1059.001</text>
+    <text x="28" y="260" fill="#9AB9AE" font-family="monospace" font-size="12">response</text>
+    <text x="218" y="260" fill="#EFFFF9" font-family="monospace" font-size="12" font-weight="700">planned, not executed</text>
+    <rect x="28" y="287" width="352" height="45" rx="6" fill="#79F2BD" fill-opacity=".07" stroke="#174F3B"/>
+    <text x="43" y="315" fill="#CFF7E7" font-family="monospace" font-size="11">evidence retained with alert</text>
+  </g>
+  <g transform="translate(82 518)">
+    <rect width="188" height="42" rx="21" fill="#0D201A" stroke="#244C40"/>
+    <circle cx="25" cy="21" r="5" fill="#79F2BD"/>
+    <text x="41" y="27" fill="#C7DDD5" font-family="Arial, sans-serif" font-size="14" font-weight="700">Audit first</text>
+    <rect x="204" width="242" height="42" rx="21" fill="#0D201A" stroke="#244C40"/>
+    <text x="225" y="27" fill="#C7DDD5" font-family="Arial, sans-serif" font-size="14" font-weight="700">MITRE ATT&amp;CK mapped</text>
+    <rect x="462" width="153" height="42" rx="21" fill="#0D201A" stroke="#244C40"/>
+    <text x="484" y="27" fill="#C7DDD5" font-family="Arial, sans-serif" font-size="14" font-weight="700">Apache 2.0</text>
+  </g>
+</svg>

@@ -1,0 +1,89 @@
+digraph BAITTrustBoundaries {
+  graph [
+    rankdir=LR,
+    bgcolor="transparent",
+    pad="0.35",
+    nodesep="0.45",
+    ranksep="0.7",
+    splines=polyline,
+    compound=true,
+    fontname="Arial",
+    fontsize=18,
+    fontcolor="#DDF8EE",
+    label="BAIT trust boundaries and protected assets",
+    labelloc=t,
+    labeljust=l
+  ];
+  node [
+    shape=box,
+    style="rounded,filled",
+    fontname="Arial",
+    fontsize=10.5,
+    color="#315C50",
+    fillcolor="#10231E",
+    fontcolor="#E8FFF7",
+    margin="0.18,0.11",
+    penwidth=1.3
+  ];
+  edge [
+    color="#71E7B4",
+    fontcolor="#B9D9CE",
+    fontname="Arial",
+    fontsize=9,
+    arrowsize=0.72,
+    penwidth=1.2
+  ];
+
+  subgraph cluster_os {
+    label="Endpoint operating system";
+    style="rounded,dashed";
+    color="#315C50";
+    fontcolor="#9FBEB3";
+    osdata [label="Processes, connections, files"];
+    oscontrol [label="Process and file controls"];
+  }
+
+  subgraph cluster_agent {
+    label="BAIT agent process";
+    style="rounded";
+    color="#79F2BD";
+    fontcolor="#79F2BD";
+    collector [label="Collectors"];
+    detector [label="Detection + correlation"];
+    responder [label="Response policy + actions"];
+  }
+
+  subgraph cluster_data {
+    label="Local protected data";
+    style="rounded,dashed";
+    color="#315C50";
+    fontcolor="#9FBEB3";
+    rules [label="Rules and configuration"];
+    database [label="SQLite evidence store", shape=cylinder];
+    quarantine [label="Quarantine directory"];
+  }
+
+  subgraph cluster_client {
+    label="Administrative client boundary";
+    style="rounded,dashed";
+    color="#315C50";
+    fontcolor="#9FBEB3";
+    analyst [label="Authorized analyst"];
+    api [label="FastAPI / CLI"];
+  }
+
+  external [label="External SIEM, SOAR, firewall,\nor fleet service", style="rounded,dashed,filled", fillcolor="#242B27"];
+
+  osdata -> collector [label="privilege-limited read"];
+  collector -> detector;
+  rules -> detector [label="validated input"];
+  detector -> database [label="events + alerts"];
+  analyst -> api [label="authenticated request"];
+  api -> database [dir=both, label="review"];
+  api -> responder [label="explicit response"];
+  responder -> rules [label="policy read"];
+  responder -> oscontrol [label="approved local action"];
+  responder -> quarantine [label="hash + move + metadata"];
+  responder -> database [label="response result"];
+  api -> external [style=dashed, label="planned integration"];
+}

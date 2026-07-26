@@ -1,0 +1,88 @@
+digraph BAITResponseFlow {
+  graph [
+    rankdir=TB,
+    bgcolor="transparent",
+    pad="0.35",
+    nodesep="0.44",
+    ranksep="0.52",
+    splines=polyline,
+    fontname="Arial",
+    fontsize=20,
+    fontcolor="#DDF8EE",
+    label="BAIT response decision flow",
+    labelloc=t,
+    labeljust=l
+  ];
+  node [
+    shape=box,
+    style="rounded,filled",
+    fontname="Arial",
+    fontsize=11.5,
+    color="#315C50",
+    fillcolor="#10231E",
+    fontcolor="#E8FFF7",
+    margin="0.2,0.12",
+    penwidth=1.4
+  ];
+  edge [
+    color="#71E7B4",
+    fontcolor="#B9D9CE",
+    fontname="Arial",
+    fontsize=9.5,
+    arrowsize=0.76,
+    penwidth=1.25
+  ];
+
+  request [label="Analyst or API requests a response action", fillcolor="#15372D", color="#79F2BD"];
+  known [label="Is the action recognized?", shape=diamond, fillcolor="#342F19", color="#FFE07D"];
+  triage [label="Is the action collect_triage?", shape=diamond, fillcolor="#342F19", color="#FFE07D"];
+  family [label="Which action family?", shape=diamond, fillcolor="#342F19", color="#FFE07D"];
+  external_target [label="Is the required host or indicator\ncontext present?", shape=diamond, fillcolor="#342F19", color="#FFE07D"];
+  local_target [label="Is a valid PID or file path present?", shape=diamond, fillcolor="#342F19", color="#FFE07D"];
+  mode [label="Is response mode active?", shape=diamond, fillcolor="#342F19", color="#FFE07D"];
+  enabled [label="Is the local action explicitly enabled?", shape=diamond, fillcolor="#342F19", color="#FFE07D"];
+  boundaries [label="Does the reported target pass protected-process\nor approved-path boundaries?", shape=diamond, fillcolor="#342F19", color="#FFE07D"];
+  identity [label="Re-resolve and verify the live target\nPID, name, create time, canonical path", shape=diamond, fillcolor="#342F19", color="#FFE07D"];
+  execute [label="Execute the approved local action", fillcolor="#3A241F", color="#FF9C7D"];
+  external [label="Record isolation or indicator-block request\nfor approved external enforcement", fillcolor="#242B27"];
+
+  blocked [label="Status: blocked\nSafety boundary prevented action", fillcolor="#242B27"];
+  planned [label="Status: planned\nNo disruptive change", fillcolor="#242B27"];
+  failed [label="Status: failed\nExecution error recorded", fillcolor="#3A241F", color="#FF9C7D"];
+  executed [label="Status: executed", fillcolor="#15372D", color="#79F2BD"];
+  record [label="Persist ResponseResult, status, message, and evidence", fillcolor="#15372D", color="#79F2BD"];
+
+  request -> known;
+  known -> blocked [label="No"];
+  known -> triage [label="Yes"];
+  triage -> executed [label="Yes"];
+  triage -> family [label="No"];
+
+  family -> external_target [label="External plan"];
+  external_target -> blocked [label="No"];
+  external_target -> external [label="Yes"];
+  external -> planned;
+
+  family -> local_target [label="Terminate or quarantine"];
+  local_target -> blocked [label="No"];
+  local_target -> mode [label="Yes"];
+  mode -> planned [label="No, audit"];
+  mode -> enabled [label="Yes"];
+  enabled -> planned [label="No"];
+  enabled -> boundaries [label="Yes"];
+  boundaries -> blocked [label="No"];
+  boundaries -> identity [label="Yes"];
+  identity -> blocked [label="Mismatch"];
+  identity -> execute [label="Verified"];
+  execute -> executed [label="Success"];
+  execute -> failed [label="Error"];
+
+  { rank=same; external_target; local_target; }
+  { rank=same; blocked; planned; }
+  { rank=same; executed; failed; }
+
+  blocked -> record;
+  planned -> record;
+  failed -> record;
+  executed -> record;
+}

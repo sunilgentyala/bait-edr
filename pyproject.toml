@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bait-edr"
+version = "0.2.0"
+description = "BAIT: Behavioral Analytics and Intrusion Triage endpoint detection and response framework"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "BAIT Contributors" }]
+keywords = ["edr", "ids", "incident-response", "mitre-attck", "endpoint-security"]
+dependencies = [
+  "fastapi>=0.115,<1",
+  "psutil>=6,<8",
+  "pydantic>=2.8,<3",
+  "PyYAML>=6,<7",
+  "typer>=0.15,<1",
+  "uvicorn>=0.32,<1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8,<10",
+  "pytest-cov>=5,<7",
+  "ruff>=0.9,<1",
+]
+yara = ["yara-python>=4.5,<5"]
+
+[project.scripts]
+bait = "bait_edr.cli:app"
+
+[project.urls]
+Homepage = "https://sunilgentyala.github.io/bait-edr/"
+Repository = "https://github.com/sunilgentyala/bait-edr"
+Issues = "https://github.com/sunilgentyala/bait-edr/issues"
+Security = "https://github.com/sunilgentyala/bait-edr/security/policy"
+
+[tool.setuptools.packages.find]
+include = ["bait_edr*"]
+
+[tool.setuptools.package-data]
+bait_edr = ["rules/*.yml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+ignore = ["B008"]

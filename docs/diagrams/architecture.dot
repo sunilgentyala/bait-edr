@@ -1,0 +1,87 @@
+digraph BAITArchitecture {
+  graph [
+    rankdir=TB,
+    bgcolor="transparent",
+    pad="0.35",
+    nodesep="0.42",
+    ranksep="0.65",
+    splines=polyline,
+    fontname="Arial",
+    fontsize=18,
+    fontcolor="#DDF8EE",
+    label="BAIT EDR verified component flow",
+    labelloc=t,
+    labeljust=l
+  ];
+  node [
+    shape=box,
+    style="rounded,filled",
+    fontname="Arial",
+    fontsize=11,
+    color="#315C50",
+    fillcolor="#10231E",
+    fontcolor="#E8FFF7",
+    margin="0.18,0.12",
+    penwidth=1.3
+  ];
+  edge [
+    color="#71E7B4",
+    fontcolor="#B9D9CE",
+    fontname="Arial",
+    fontsize=9,
+    arrowsize=0.75,
+    penwidth=1.25
+  ];
+
+  subgraph cluster_sources {
+    label="Telemetry sources";
+    color="#27483F";
+    fontcolor="#9FBEB3";
+    style="rounded,dashed";
+    process [label="Process snapshots\nProcessCollector"];
+    network [label="TCP snapshots\nNetworkCollector"];
+    ingest [label="External normalized events\nPOST /events"];
+    yara [label="On-demand file inspection\nFileScanner + optional YARA"];
+  }
+
+  event [label="Normalized EndpointEvent\nprocess, file, network, auth, user", fillcolor="#15372D", color="#79F2BD"];
+  engine [label="DetectionEngine\nvalidated YAML selections", fillcolor="#1A302A", color="#FFE07D"];
+  alert [label="Explainable Alert\nrule, severity, risk, evidence, ATT&CK", fillcolor="#18342D", color="#79F2BD"];
+  correlate [label="Correlator\nbounded recurrence context"];
+  store [label="SQLiteStorage\nevents, alerts, responses", shape=cylinder, fillcolor="#10231E"];
+  surfaces [label="FastAPI + Typer CLI\nreview and response requests", fillcolor="#15372D"];
+  manager [label="ResponseManager\naction dispatch"];
+  policy [label="ResponsePolicy\naudit or active + allowlists", shape=diamond, fillcolor="#342F19", color="#FFE07D"];
+  planned [label="Recorded plan\nno disruptive change", fillcolor="#242B27"];
+  safe [label="Low-regret action\ncollect triage", fillcolor="#15372D"];
+  active [label="Policy-approved action\nterminate or quarantine", fillcolor="#3A241F", color="#FF9C7D"];
+  external [label="External enforcement plan\nisolation or indicator block", fillcolor="#242B27"];
+  result [label="ResponseResult\nstatus + evidence", fillcolor="#15372D", color="#79F2BD"];
+
+  { rank=same; process; network; ingest; yara; }
+  { rank=same; event; engine; alert; correlate; }
+  { rank=same; store; surfaces; manager; }
+  { rank=same; planned; safe; active; external; }
+
+  process -> event;
+  network -> event [label="direction = unknown"];
+  ingest -> event;
+  yara -> event [style=dashed, label="metadata"];
+  event -> engine;
+  event -> store [label="persist source"];
+  engine -> alert;
+  alert -> correlate;
+  correlate -> store [label="persist alert"];
+  store -> surfaces [dir=both, label="query / save"];
+  surfaces -> manager [label="explicit request"];
+  manager -> policy;
+  policy -> planned [label="audit / disabled"];
+  policy -> safe [label="non-disruptive"];
+  policy -> active [label="active + verified"];
+  policy -> external [label="not implemented"];
+  planned -> result;
+  safe -> result;
+  active -> result;
+  external -> result;
+  result -> store [label="persist outcome"];
+}

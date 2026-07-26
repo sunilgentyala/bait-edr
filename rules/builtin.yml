@@ -1,0 +1,198 @@
+- id: BAIT-1001
+  title: Suspicious Encoded PowerShell Execution
+  description: Detects PowerShell command lines that use encoded command switches and require contextual investigation.
+  status: experimental
+  author: BAIT Contributors
+  date: 2026-07-25
+  modified: 2026-07-25
+  severity: high
+  tags:
+    - attack.execution
+    - attack.t1059.001
+  references:
+    - https://attack.mitre.org/techniques/T1059/001/
+  logsource:
+    category: process_creation
+    product: windows
+  detection:
+    selection:
+      event.category: process
+      process.name|endswith:
+        - powershell.exe
+        - pwsh.exe
+      process.command_line|regex:
+        - "(?:^|\\s)-(?:enc|encodedcommand)(?:\\s|:)"
+    condition: selection
+  fields:
+    - process.pid
+    - process.ppid
+    - process.parent_name
+    - process.executable
+    - process.command_line
+    - user.name
+  response:
+    - collect_triage
+    - terminate_process
+  false_positives:
+    - Approved administrative automation that intentionally uses encoded PowerShell
+
+- id: BAIT-1002
+  title: Script Interpreter Launched by a User-Facing Application
+  description: Detects a command or script interpreter launched by a document, email, or browser process.
+  status: experimental
+  author: BAIT Contributors
+  date: 2026-07-25
+  modified: 2026-07-25
+  severity: high
+  tags:
+    - attack.execution
+    - attack.t1204.002
+    - attack.t1059
+  references:
+    - https://attack.mitre.org/techniques/T1204/002/
+    - https://attack.mitre.org/techniques/T1059/
+  logsource:
+    category: process_creation
+    product: any
+  detection:
+    selection_parent:
+      process.parent_name|endswith:
+        - winword.exe
+        - excel.exe
+        - outlook.exe
+        - chrome.exe
+        - msedge.exe
+        - firefox.exe
+    selection_child:
+      process.name|endswith:
+        - powershell.exe
+        - pwsh.exe
+        - cmd.exe
+        - wscript.exe
+        - cscript.exe
+        - bash
+        - sh
+    condition: selection_parent and selection_child
+  fields:
+    - process.pid
+    - process.ppid
+    - process.parent_name
+    - process.name
+    - process.executable
+    - process.command_line
+  response:
+    - collect_triage
+  false_positives:
+    - Approved enterprise automation launched by an application plug-in or browser helper
+
+- id: BAIT-1003
+  title: Executable Launched from a Temporary Directory
+  description: Detects executable content started from common user or operating-system temporary paths.
+  status: experimental
+  author: BAIT Contributors
+  date: 2026-07-25
+  modified: 2026-07-25
+  severity: medium
+  tags:
+    - attack.execution
+    - attack.t1204.002
+  references:
+    - https://attack.mitre.org/techniques/T1204/002/
+  logsource:
+    category: process_creation
+    product: any
+  detection:
+    selection_path:
+      process.executable|contains:
+        - "\\AppData\\Local\\Temp\\"
+        - "\\Windows\\Temp\\"
+        - "/tmp/"
+        - "/var/tmp/"
+    selection_extension:
+      process.executable|regex:
+        - "\\.(exe|scr|com|dll|bin|run)$"
+    condition: selection_path and selection_extension
+  fields:
+    - process.pid
+    - process.parent_name
+    - process.executable
+    - process.command_line
+    - file.sha256
+  response:
+    - collect_triage
+    - quarantine_file
+  false_positives:
+    - Legitimate software installers, package managers, and update agents
+
+- id: BAIT-1004
+  title: TCP Connection to an Uncommon Remote-Access Port
+  description: Detects an established TCP connection whose remote port is frequently used in testing, tunneling, or unauthorized remote access. This is a low-context heuristic and requires environment-specific tuning.
+  status: experimental
+  author: BAIT Contributors
+  date: 2026-07-25
+  modified: 2026-07-25
+  severity: medium
+  tags:
+    - attack.command-and-control
+    - attack.t1095
+  references:
+    - https://attack.mitre.org/techniques/T1095/
+  logsource:
+    category: network_connection
+    product: any
+  detection:
+    selection:
+      event.category: network
+      network.protocol: tcp
+      network.remote_port:
+        - 1337
+        - 4444
+        - 5555
+        - 6667
+    condition: selection
+  fields:
+    - process.pid
+    - process.name
+    - network.direction
+    - network.local_ip
+    - network.local_port
+    - network.remote_ip
+    - network.remote_port
+  response:
+    - collect_triage
+    - block_indicator
+  false_positives:
+    - Authorized security testing laboratories
+    - Approved developer services or internal remote-support tools
+
+- id: BAIT-1005
+  title: Multiple Authentication Failures in an Aggregate Event
+  description: Detects an authentication event whose failure count meets or exceeds the configured starter threshold.
+  status: experimental
+  author: BAIT Contributors
+  date: 2026-07-25
+  modified: 2026-07-25
+  severity: medium
+  tags:
+    - attack.credential-access
+    - attack.t1110
+  references:
+    - https://attack.mitre.org/techniques/T1110/
+  logsource:
+    category: authentication
+    product: any
+  detection:
+    selection:
+      event.category: authentication
+      event.outcome: failure
+      authentication.failure_count|gte: 5
+    condition: selection
+  fields:
+    - user.name
+    - authentication.failure_count
+    - network.remote_ip
+    - event.outcome
+  response:
+    - collect_triage
+  false_positives:
+    - Password changes, stale service credentials, or synchronized application retries

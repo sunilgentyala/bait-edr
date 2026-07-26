@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install package and development tools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Run tests with coverage gate
+        run: pytest --cov=bait_edr --cov-report=term-missing --cov-fail-under=75
+
+      - name: Validate built-in rules
+        run: bait validate-rules --rules rules/builtin.yml
+
+  documentation:
+    name: Documentation and diagrams
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Install Graphviz
+        run: sudo apt-get update && sudo apt-get install --yes graphviz
+
+      - name: Render diagrams
+        run: python scripts/render_diagrams.py --check
+
+      - name: Validate GitHub Pages site
+        run: python scripts/validate_site.py

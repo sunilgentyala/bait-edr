@@ -1,0 +1,20 @@
+<!--
+  Copy bait-status-widget.js to your site's static assets. Point data-api-url to
+  a server-side endpoint that exposes approved aggregate fields only.
+-->
+<script type="module" src="/assets/bait-status-widget.js"></script>
+
+<bait-status
+  data-title="BAIT Endpoint Security"
+  data-api-url="https://security.example.com/bait/public-health">
+</bait-status>
+
+<!-- Expected response example:
+{
+  "status": "ok",
+  "alerts": 12,
+  "response_mode": "audit"
+}
+
+Never expose the BAIT administrative API or bearer token to browser JavaScript.
+-->

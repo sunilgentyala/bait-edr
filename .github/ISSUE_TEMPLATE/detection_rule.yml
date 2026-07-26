@@ -1,0 +1,42 @@
+name: Detection rule proposal
+description: Propose a defensive detection rule with evidence and safe test data
+title: "[Rule]: "
+labels: [detection]
+body:
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Behavior to detect
+      description: Describe an observable behavior, not only a malware family or tool name.
+    validations:
+      required: true
+
+  - type: input
+    id: attack
+    attributes:
+      label: MITRE ATT&CK technique
+      placeholder: T1059.001
+
+  - type: textarea
+    id: telemetry
+    attributes:
+      label: Required telemetry
+      description: List the event category and exact fields needed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: false_positives
+    attributes:
+      label: Expected false positives and tuning
+    validations:
+      required: true
+
+  - type: textarea
+    id: test_event
+    attributes:
+      label: Safe synthetic test event
+      description: Do not attach live malware, credentials, or production endpoint records.
+      render: yaml
+    validations:
+      required: true
