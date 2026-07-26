@@ -1,6 +1,6 @@
 # BAIT Threat Model
 
-**Version:** 0.2.0  
+**Version:** 0.2.1  
 **Review date:** July 25, 2026
 
 ## Scope
@@ -40,8 +40,9 @@ It does not cover a future fleet control plane, kernel driver, cloud service, na
 | Tampered or fabricated event | Missed detection or false alert | Pydantic validation, event identifiers, stored triggering evidence | No signed provenance. Add authenticated transport, sensor identity, sequence tracking, and integrity signatures. |
 | Telemetry loss | Blind spots for short-lived activity | Collector metadata and explicit snapshot limitations | No loss counter or kernel stream. Add native event sources, health metrics, queue limits, and gap alerts. |
 | Malicious rule update | False alerts, bypass, or unsafe response recommendation | Rule schema validation, known action allowlist, unique IDs, CI, code review | No signing or deployment quorum. Add signed bundles, approval workflow, staged rollout, and rollback. |
-| Unsafe regular expression | Performance degradation or rule failure | Regex compilation validation | Catastrophic backtracking remains possible. Add complexity limits, execution timeouts, and fuzz tests. |
+| Unsafe regular expression | Performance degradation or rule failure | Regex compilation validation, a static reject of nested-quantifier catastrophic-backtracking shapes at load time, and a bounded subject length before matching | Static rejection is heuristic, not a formal proof of linear-time matching, and no per-match execution timeout exists. Add fuzz tests and a hard execution timeout. |
 | API credential theft | Alert disclosure or unauthorized response request | Optional bearer token and localhost default | No TLS, RBAC, short-lived credentials, or identity attribution. Use mTLS or identity-aware proxy and per-user authorization. |
+| Silent unauthenticated API | Every endpoint accepts requests with no warning when the token env var is unset | Startup log warning and an `auth_enabled` field on `/health` make the unauthenticated state observable rather than silent | Observability is not enforcement. The API still permits unauthenticated access by default; deployments must set the token env var and keep the API bound to loopback or behind an authenticating proxy. |
 | API denial of service | Agent resource exhaustion | Bounded alert list parameter | No request size, rate, or concurrency control. Add reverse-proxy limits and service resource quotas. |
 | PID reuse before termination | Wrong process terminated | Active response verifies process name and creation time immediately before execution | A race remains between final verification and termination. Native handle-based implementation is preferred. |
 | Quarantine path escape | Unauthorized file movement | Active mode, explicit approved roots, canonical path recheck | Filesystem races and mount changes remain possible. Use platform-native handles and deny reparse points or symlink traversal. |

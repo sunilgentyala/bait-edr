@@ -1,8 +1,8 @@
 # Verification Report
 
-**Release:** 0.2.0  
+**Release:** 0.2.1  
 **Verification date:** July 25, 2026  
-**Local environment:** Linux container, Python 3.13.5, Graphviz 2.42.4
+**Local environment:** Linux container, Python 3.13.5, Graphviz 2.42.4; retested on Windows, Python 3.14.4
 
 ## Result
 
@@ -12,8 +12,8 @@ The reviewed repository passed the available functional, packaging, rule, diagra
 
 | Area | Command or method | Result |
 |---|---|---|
-| Unit and integration tests | `pytest --cov=bait_edr --cov-report=term-missing --cov-fail-under=75` | 26 passed |
-| Line coverage | `pytest-cov` | 76.85 percent, displayed as 77 percent |
+| Unit and integration tests | `pytest --cov=bait_edr --cov-report=term-missing --cov-fail-under=75` | 39 passed |
+| Line coverage | `pytest-cov` | 80 percent |
 | Python syntax | `python -m compileall -q bait_edr tests scripts` | Passed |
 | Built-in rule validation | `bait validate-rules` | 5 rules passed |
 | Safe synthetic demonstration | `bait demo` | 2 expected alerts, no payload execution |
@@ -37,7 +37,9 @@ The reviewed repository passed the available functional, packaging, rule, diagra
 9. Indicator blocking is a recorded external-enforcement plan and requires an indicator.
 10. API bearer-token checks apply when the configured token environment variable is set.
 11. Portable TCP snapshots use `network.direction: unknown` rather than inventing direction.
-12. Rule loading rejects invalid IDs, unsupported operators or response actions, invalid regular expressions, and unknown condition selections.
+12. Rule loading rejects invalid IDs, unsupported operators or response actions, invalid regular expressions, unknown condition selections, and regex patterns matching known catastrophic-backtracking shapes.
+13. Regex matching is bounded to a fixed subject length regardless of the attacker-controlled command-line or path length.
+14. An unauthenticated API (no token environment variable set) logs a startup warning and reports `auth_enabled: false` on `/health` rather than allowing access silently.
 
 ## Diagram verification
 

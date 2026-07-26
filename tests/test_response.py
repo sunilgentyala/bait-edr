@@ -62,6 +62,69 @@ def test_active_termination_blocks_changed_process_identity(monkeypatch) -> None
     assert "identity changed" in result.message.lower()
 
 
+def test_active_termination_blocks_reused_pid_with_stale_create_time(monkeypatch) -> None:
+    """IdentityStable(x,z): same name, but the live create_time no longer matches the
+    alert's reported create_time, meaning the PID was recycled onto a new process."""
+
+    class FakeProcess:
+        def __init__(self, pid: int) -> None:
+            self.pid = pid
+
+        def name(self) -> str:
+            return "demo.exe"
+
+        def create_time(self) -> float:
+            return 999999.0
+
+        def terminate(self) -> None:  # pragma: no cover - must not be reached
+            raise AssertionError("terminate() must not run when identity is unstable")
+
+        def wait(self, timeout: int) -> None:  # pragma: no cover
+            return None
+
+    monkeypatch.setattr("bait_edr.response.actions.psutil.Process", FakeProcess)
+    alert = make_alert()
+    alert.event.process["create_time"] = 100.0
+    manager = ResponseManager(
+        ResponseConfig(mode="active", allow_process_termination=True, protected_process_names=[])
+    )
+    result = manager.execute(alert, "terminate_process")
+    assert result.status == "blocked"
+    assert "reused" in result.message.lower()
+
+
+def test_active_termination_executes_when_identity_is_stable(monkeypatch) -> None:
+    """The single highest-consequence success path: audit->active, target valid,
+    not protected, identity stable, action actually dispatched to psutil."""
+
+    class FakeProcess:
+        def __init__(self, pid: int) -> None:
+            self.pid = pid
+            self.terminated = False
+
+        def name(self) -> str:
+            return "demo.exe"
+
+        def create_time(self) -> float:
+            return 100.0
+
+        def terminate(self) -> None:
+            self.terminated = True
+
+        def wait(self, timeout: int) -> None:
+            return None
+
+    monkeypatch.setattr("bait_edr.response.actions.psutil.Process", FakeProcess)
+    alert = make_alert()
+    alert.event.process["create_time"] = 100.0
+    manager = ResponseManager(
+        ResponseConfig(mode="active", allow_process_termination=True, protected_process_names=[])
+    )
+    result = manager.execute(alert, "terminate_process")
+    assert result.status == "executed"
+    assert result.evidence["pid"] == alert.event.process["pid"]
+
+
 def test_active_quarantine_preserves_hash_and_metadata(tmp_path) -> None:
     approved = tmp_path / "approved"
     quarantine = tmp_path / "quarantine"

@@ -2,6 +2,19 @@
 
 All notable changes are documented here. The project follows semantic versioning during the development-preview stage where practical.
 
+## 0.2.1 - 2026-07-25
+
+### Security and correctness
+
+- Made the unauthenticated API state observable instead of silent: a startup log warning and a new `auth_enabled` field on `/health` report when no bearer token is configured, rather than every endpoint quietly accepting unauthenticated requests.
+- Added a static rejection of nested-quantifier catastrophic-backtracking regex shapes at rule-load time, and bounded the text length evaluated by rule regexes, to reduce ReDoS exposure from attacker-influenced command lines and paths.
+- Documented the residual PID-reuse race between final identity verification and process termination, and the residual unauthenticated-by-default API state, as explicit threat-model entries rather than leaving them implicit.
+
+### Verification
+
+- Expanded the suite from 26 to 39 tests, adding direct coverage of the response-policy admissibility predicate in isolation (audit-mode-only, action-disabled-only, protected-process-only), the previously untested successful `terminate_process` execution path, the PID-reuse block path, the `all of` / `1 of` / `any of` / wildcard condition grammar, and positive-match tests for rules BAIT-1002 and BAIT-1003.
+- Increased measured line coverage from 77 to 80 percent.
+
 ## 0.2.0 - 2026-07-25
 
 ### Security and correctness

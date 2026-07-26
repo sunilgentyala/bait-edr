@@ -8,10 +8,10 @@
 
 <p align="center">
   <a href="https://github.com/sunilgentyala/bait-edr/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/sunilgentyala/bait-edr/actions/workflows/ci.yml/badge.svg"></a>
-  <img alt="Version 0.2.0" src="https://img.shields.io/badge/version-0.2.0-79f2bd">
+  <img alt="Version 0.2.1" src="https://img.shields.io/badge/version-0.2.1-79f2bd">
   <img alt="Python 3.11 to 3.13" src="https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-3776AB">
-  <img alt="26 tests passing" src="https://img.shields.io/badge/tests-26%20passing-brightgreen">
-  <img alt="Coverage 77 percent" src="https://img.shields.io/badge/coverage-77%25-brightgreen">
+  <img alt="39 tests passing" src="https://img.shields.io/badge/tests-39%20passing-brightgreen">
+  <img alt="Coverage 80 percent" src="https://img.shields.io/badge/coverage-80%25-brightgreen">
   <a href="LICENSE"><img alt="Apache License 2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue"></a>
 </p>
 
@@ -216,10 +216,10 @@ website-integration/       External website widget and proxy examples
 
 ## Verification
 
-Version 0.2.0 was verified on Python 3.13.5 with:
+Version 0.2.1 was verified on Python 3.13.5 and 3.14.4 with:
 
-- 26 passing tests
-- 77 percent measured line coverage
+- 39 passing tests
+- 80 percent measured line coverage
 - successful Python byte-code compilation
 - successful validation of all five built-in rules
 - a safe synthetic demonstration producing the two expected alerts

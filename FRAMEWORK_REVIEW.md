@@ -111,3 +111,17 @@ The GitHub Pages site is static. It does not require a third-party JavaScript fr
 ## Release recommendation
 
 Version 0.2.0 can be published as a **development preview** with the limitations displayed prominently. Keep active response disabled in public demonstrations and initial pilots. Do not market this release as production-ready, certified, autonomous, or equivalent to a commercial EDR.
+
+## Addendum: findings from an independent 0.2.1 review
+
+A follow-up review targeted the response-policy admissibility gate specifically, since it is the framework's central safety claim and the component the accompanying paper formalizes as a boolean predicate.
+
+| Priority | Finding | Resolution |
+|---|---|---|
+| High | Every API endpoint accepted unauthenticated requests with no warning when `BAIT_API_TOKEN` was unset, since `authorize()` returned immediately for a missing token. | The unauthenticated state is now observable: a startup log warning and a new `auth_enabled` field on `/health` report it. The default behavior (loopback binding, no token required for local use) is unchanged, but it is no longer silent. |
+| High | Rule regexes ran against attacker-influenced command-line and path text with no bound on backtracking cost, since only `re.compile` success was checked at load time. | Rule loading now statically rejects nested-quantifier shapes associated with catastrophic backtracking, and matching bounds the evaluated subject to a fixed length. |
+| Medium | The response-admissibility predicate's `M_active` and `E_a` terms were only exercised indirectly through `ResponseManager`, and the successful `terminate_process` execution path and the PID-reuse block path had no test at all. | Added direct `ResponsePolicy` tests for audit-mode-only and action-disabled-only denial, and `ResponseManager` tests for a successful termination and a PID-reuse-triggered block. |
+| Medium | The condition grammar (`all of`, `1 of`/`any of`, wildcard selection names) had no test, and two of the five built-in rules (BAIT-1002, BAIT-1003) had no positive-match test. | Added grammar-form tests against synthetic rules and positive/negative tests for both rules. |
+| Low | The residual PID-reuse race between final identity verification and `process.terminate()` was accurate in the threat model but not cross-referenced from the verification report. | Left as a documented residual risk; a fully race-free implementation requires a native OS handle rather than a re-queried PID. |
+
+Test count rose from 26 to 39 and measured line coverage from 77 to 80 percent. No detection, correlation, or storage behavior changed; the fixes are confined to the response-policy safety boundary and its test coverage.

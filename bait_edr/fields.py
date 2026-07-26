@@ -28,6 +28,14 @@ def _as_text(value: Any) -> str:
     return str(value)
 
 
+MAX_REGEX_SUBJECT_LENGTH = 4096
+"""Bound on text evaluated by rule regexes.
+
+Process command lines and paths are attacker-influenced. Capping the
+subject length limits the worst-case work a single (validated) regex can
+perform per event without affecting realistic command-line lengths."""
+
+
 def match_value(actual: Any, expected: Any, operator: str) -> bool:
     """Evaluate one rule field using a conservative set of operators."""
 
@@ -44,8 +52,9 @@ def match_value(actual: Any, expected: Any, operator: str) -> bool:
     if operator == "endswith":
         return any(actual_lower.endswith(_as_text(candidate).lower()) for candidate in candidates)
     if operator == "regex":
+        subject = actual_text[:MAX_REGEX_SUBJECT_LENGTH]
         return any(
-            re.search(_as_text(candidate), actual_text, re.IGNORECASE) is not None
+            re.search(_as_text(candidate), subject, re.IGNORECASE) is not None
             for candidate in candidates
         )
     if operator == "in":

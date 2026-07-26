@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import secrets
 from typing import Annotated
 
@@ -12,14 +13,23 @@ from bait_edr.config import Settings, load_settings
 from bait_edr.models import EndpointEvent, ResponseResult
 from bait_edr.response.actions import ResponseManager
 
+LOGGER = logging.getLogger(__name__)
+
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or load_settings()
     agent = BAITAgent(settings)
     responder = ResponseManager(settings.response)
+    auth_enabled = settings.api_token is not None
+    if not auth_enabled:
+        LOGGER.warning(
+            "BAIT API starting with no bearer token configured (%s unset). "
+            "Every endpoint, including /alerts and /alerts/{id}/respond, is unauthenticated.",
+            settings.api.token_env,
+        )
     app = FastAPI(
         title="BAIT EDR API",
-        version="0.2.0",
+        version="0.2.1",
         description="Defensive endpoint telemetry, detection, and policy-controlled response API.",
     )
 
@@ -39,6 +49,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "status": "ok",
             "agent_id": settings.agent.id,
             "response_mode": settings.response.mode,
+            "auth_enabled": auth_enabled,
             **agent.storage.counts(),
         }
 

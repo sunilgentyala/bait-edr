@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use BAIT-EDR, cite this software and the associated research paper."
 title: "BAIT-EDR: Behavioral Analytics and Intrusion Triage"
 type: software
-version: 0.2.0
+version: 0.2.1
 date-released: 2026-07-26
 authors:
   - family-names: Gentyala

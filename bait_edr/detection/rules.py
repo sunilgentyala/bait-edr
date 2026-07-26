@@ -13,6 +13,16 @@ from bait_edr.fields import parse_rule_key
 from bait_edr.models import DetectionRule
 
 RULE_ID_PATTERN = re.compile(r"^BAIT-[A-Z0-9][A-Z0-9.-]{2,}$")
+
+# Heuristic signatures for nested/overlapping quantifiers that cause
+# catastrophic regex backtracking (e.g. "(a+)+", "(.*)*", "(\\w+){2,}+").
+# This is not a formal proof of linear-time matching, but it rejects the
+# common ReDoS shapes seen in real detection-rule regressions before a
+# pathological pattern can reach the event-matching hot path.
+CATASTROPHIC_REGEX_PATTERN = re.compile(
+    r"\([^()]*[+*][^()]*\)[+*]"  # (X+)+ , (X*)* , (X+)* , (X*)+
+    r"|\([^()]*[+*][^()]*\)\{\d*,?\d*\}"  # (X+){2,} style repeated groups
+)
 ATTACK_TAG_PATTERN = re.compile(r"^attack\.(?:t\d{4}(?:\.\d{3})?|[a-z][a-z0-9-]*)$")
 ALLOWED_OPERATORS = {
     "equals",
@@ -98,6 +108,11 @@ def _validate_rule(rule: DetectionRule) -> None:
                         raise RuleLoadError(
                             f"Rule {rule.id} contains invalid regex {pattern!r}: {exc}"
                         ) from exc
+                    if CATASTROPHIC_REGEX_PATTERN.search(str(pattern)):
+                        raise RuleLoadError(
+                            f"Rule {rule.id} regex {pattern!r} contains a nested quantifier "
+                            "shape associated with catastrophic backtracking"
+                        )
 
     names = _selection_names(condition)
     if names is not None:
