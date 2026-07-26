@@ -61,7 +61,7 @@
           <h2>Suspicious Encoded PowerShell Execution</h2>
           <dl>
             <div><dt>severity</dt><dd class="severity">high</dd></div>
-            <div><dt>risk score</dt><dd>78 / 100</dd></div>
+            <div><dt>risk score</dt><dd>75 / 100</dd></div>
             <div><dt>ATT&amp;CK</dt><dd>T1059.001</dd></div>
             <div><dt>response</dt><dd>planned, not executed</dd></div>
           </dl>
@@ -75,8 +75,8 @@
     </section>
 
     <section class="metrics" aria-label="Verified project metrics">
-      <article><strong>26</strong><span>passing unit tests</span></article>
-      <article><strong>77%</strong><span>measured line coverage</span></article>
+      <article><strong>39</strong><span>passing unit tests</span></article>
+      <article><strong>80%</strong><span>measured line coverage</span></article>
       <article><strong>5</strong><span>validated starter rules</span></article>
       <article><strong>0</strong><span>disruptive actions enabled by default</span></article>
     </section>
@@ -146,7 +146,7 @@
         <a href="assets/response-flow.svg" aria-label="Open the BAIT response decision flow at full size">
           <img src="assets/response-flow.svg" alt="BAIT response flow showing recognized action checks, required target data, audit or active mode, explicit action enablement, safety boundaries, identity revalidation, execution, and recorded results.">
         </a>
-        <figcaption>Host isolation and indicator blocking remain recorded external-enforcement plans in version 0.2.0.</figcaption>
+        <figcaption>Host isolation and indicator blocking remain recorded external-enforcement plans in version 0.2.1.</figcaption>
       </figure>
       <div class="safety-grid">
         <article><span>01</span><h3>Audit first</h3><p>Disruptive requests are recorded as planned until administrators intentionally enable active mode.</p></article>
@@ -178,7 +178,7 @@
           <p class="eyebrow">Verification record</p>
           <h2>Claims backed by repeatable checks</h2>
         </div>
-        <p>Version 0.2.0 was tested locally with safe synthetic telemetry. Passing tests reduce known defects but do not certify production readiness or prove the absence of vulnerabilities.</p>
+        <p>Version 0.2.1 was tested locally with safe synthetic telemetry. Passing tests reduce known defects but do not certify production readiness or prove the absence of vulnerabilities.</p>
       </div>
       <div class="verification-grid">
         <article><strong>PASS</strong><h3>Detection and correlation</h3><p>Rule loading, operators, evidence reasons, thresholds, and risk escalation.</p></article>

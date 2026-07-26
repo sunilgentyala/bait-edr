@@ -72,7 +72,7 @@ An analyst responds to an old process alert after the original PID has exited an
 
 A browser widget is pointed directly at the administrative health endpoint. Even without a token, counts and deployment state can disclose operational information. The recommended design is a separate server-side aggregate endpoint containing only approved fields.
 
-## Explicit non-goals for version 0.2.0
+## Explicit non-goals for version 0.2.1
 
 - kernel self-protection
 - anti-tamper enforcement
