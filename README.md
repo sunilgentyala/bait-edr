@@ -35,7 +35,7 @@ The framework is intentionally transparent. Every alert retains the event, rule,
 ## Verified architecture
 
 <p align="center">
-  <img src="docs/assets/architecture.svg" alt="Verified BAIT EDR component flow">
+  <a href="docs/assets/architecture-modern.png"><img src="docs/assets/architecture-modern.png" width="1200" alt="Verified BAIT EDR architecture showing telemetry ingestion, behavioral detection, correlation, evidence storage, analyst interfaces, response policy, and recorded outcomes"></a>
 </p>
 
 The diagram maps directly to implemented classes and interfaces. See [FRAMEWORK_REVIEW.md](FRAMEWORK_REVIEW.md) for the component-to-code verification table and unresolved production gaps.

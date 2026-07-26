@@ -47,6 +47,7 @@ class SiteParser(HTMLParser):
     def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         self.handle_starttag(tag, attrs)
 
+
 # HTMLParser does not expose current parent tags, so title is checked directly.
 def validate_html(path: Path) -> list[str]:
     errors: list[str] = []

@@ -27,7 +27,7 @@ It is not ready to operate as a privileged enterprise endpoint agent. Native ope
 ## Verified component flow
 
 <p align="center">
-  <img src="docs/assets/architecture.svg" alt="Verified BAIT EDR component flow">
+  <img src="docs/assets/architecture-modern.png" alt="Verified BAIT EDR component flow">
 </p>
 
 | Diagram component | Implemented code | Verification |

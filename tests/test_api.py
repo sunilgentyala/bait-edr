@@ -41,9 +41,10 @@ def test_health_and_detection_ingest(tmp_path, monkeypatch) -> None:
 def test_api_token_is_enforced(tmp_path, monkeypatch) -> None:
     client = make_client(tmp_path, monkeypatch, token="secret-test-token")
     assert client.get("/alerts").status_code == 401
-    assert client.get(
-        "/alerts", headers={"Authorization": "Bearer secret-test-token"}
-    ).status_code == 200
+    assert (
+        client.get("/alerts", headers={"Authorization": "Bearer secret-test-token"}).status_code
+        == 200
+    )
 
 
 def test_alert_response_records_triage(tmp_path, monkeypatch) -> None:

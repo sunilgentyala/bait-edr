@@ -58,7 +58,6 @@ digraph BAITArchitecture {
   external [label="External enforcement plan\nisolation or indicator block", fillcolor="#242B27"];
   result [label="ResponseResult\nstatus + evidence", fillcolor="#15372D", color="#79F2BD"];
 
-  { rank=same; process; network; ingest; yara; }
   { rank=same; event; engine; alert; correlate; }
   { rank=same; store; surfaces; manager; }
   { rank=same; planned; safe; active; external; }

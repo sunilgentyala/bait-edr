@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from contextlib import suppress
+
 import psutil
 
 from bait_edr.collectors.base import Collector
@@ -39,10 +41,8 @@ class NetworkCollector(Collector):
                 continue
             process_name = ""
             if conn.pid:
-                try:
+                with suppress(psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                     process_name = psutil.Process(conn.pid).name()
-                except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-                    pass
             events.append(
                 EndpointEvent(
                     category="network",

@@ -1,10 +1,19 @@
 #!/usr/bin/env python3
-"""Render Graphviz diagram sources and optionally check committed assets."""
+"""Render Graphviz diagram sources and optionally check that they still render.
+
+Graphviz layout output is not byte-stable across Graphviz versions or
+platforms, so committed SVG/PNG assets can never be reliably compared
+byte-for-byte against a freshly rendered copy in CI without pinning the exact
+toolchain used to produce them. Instead, ``--check`` verifies that every DOT
+source still compiles cleanly to both formats, which catches syntax errors
+and renderer breakage. Regenerate the committed assets locally with
+``python scripts/render_diagrams.py`` whenever a ``docs/diagrams/*.dot``
+source changes and review the resulting image in the pull request.
+"""
 
 from __future__ import annotations
 
 import argparse
-import hashlib
 import shutil
 import subprocess
 import tempfile
@@ -14,10 +23,6 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE_DIR = ROOT / "docs" / "diagrams"
 ASSET_DIR = ROOT / "docs" / "assets"
 DIAGRAMS = ("architecture", "response-flow", "trust-boundaries")
-
-
-def digest(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def render(source: Path, output: Path, output_format: str) -> None:
@@ -34,15 +39,14 @@ def main() -> int:
     parser.add_argument(
         "--check",
         action="store_true",
-        help="Fail when committed diagram assets do not match their DOT sources.",
+        help="Verify every DOT source still renders successfully, without overwriting assets.",
     )
     args = parser.parse_args()
 
     if shutil.which("dot") is None:
         raise SystemExit("Graphviz 'dot' is required to render diagrams.")
 
-    ASSET_DIR.mkdir(parents=True, exist_ok=True)
-    mismatches: list[str] = []
+    failures: list[str] = []
 
     if args.check:
         with tempfile.TemporaryDirectory(prefix="bait-diagrams-") as temp_dir:
@@ -50,22 +54,25 @@ def main() -> int:
             for name in DIAGRAMS:
                 source = SOURCE_DIR / f"{name}.dot"
                 for output_format in ("svg", "png"):
-                    generated = temp / f"{name}.{output_format}"
-                    committed = ASSET_DIR / generated.name
-                    render(source, generated, output_format)
-                    if not committed.exists() or digest(generated) != digest(committed):
-                        mismatches.append(str(committed.relative_to(ROOT)))
+                    try:
+                        render(source, temp / f"{name}.{output_format}", output_format)
+                    except subprocess.CalledProcessError as error:
+                        failures.append(f"{name}.{output_format}: {error.stderr.strip()}")
+                asset_svg = ASSET_DIR / f"{name}.svg"
+                asset_png = ASSET_DIR / f"{name}.png"
+                if not asset_svg.exists() or not asset_png.exists():
+                    failures.append(f"{name}: missing committed asset in {ASSET_DIR}")
     else:
+        ASSET_DIR.mkdir(parents=True, exist_ok=True)
         for name in DIAGRAMS:
             source = SOURCE_DIR / f"{name}.dot"
             render(source, ASSET_DIR / f"{name}.svg", "svg")
             render(source, ASSET_DIR / f"{name}.png", "png")
 
-    if mismatches:
-        print("Diagram assets are stale:")
-        for mismatch in mismatches:
-            print(f"  - {mismatch}")
-        print("Run: python scripts/render_diagrams.py")
+    if failures:
+        print("Diagram rendering check failed:")
+        for failure in failures:
+            print(f"  - {failure}")
         return 1
 
     action = "verified" if args.check else "rendered"
