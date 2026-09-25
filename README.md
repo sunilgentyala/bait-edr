@@ -267,6 +267,25 @@ BAIT does not yet provide kernel telemetry, anti-tamper protection, fleet manage
 7. Rule suppressions, allowlists, baselines, and ATT&CK coverage reporting
 8. Central fleet management with tenant isolation and delegated administration
 
+## How to Cite
+
+BAIT-EDR is the reference implementation for the following accepted paper (IEEE Xplore DOI pending):
+
+```bibtex
+@inproceedings{gentyala2026baitedr,
+  author    = {Gentyala, Sunil and Martin, John and Caprio, Floriano and Kasireddy, Hari Rama and Kasturi, Akhila and Manoj, Sundarigari},
+  title     = {{BAIT-EDR}: An Audit-First Decision-Support Framework for Governing
+               Automated Containment in Security Operations},
+  booktitle = {2026 IEEE International Conference on Technology Management,
+               Operations and Decisions (ICTMOD)},
+  year      = {2026},
+  publisher = {IEEE},
+  note      = {Accepted; IEEE Xplore DOI pending}
+}
+```
+
+To cite the software itself, use [`CITATION.cff`](CITATION.cff) (GitHub: "Cite this repository").
+
 ## License
 
 Licensed under the [Apache License 2.0](LICENSE).

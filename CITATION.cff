@@ -18,3 +18,30 @@ keywords:
   - incident response
   - mitre attck
   - endpoint security
+preferred-citation:
+  type: conference-paper
+  title: 'BAIT-EDR: An Audit-First Decision-Support Framework for Governing Automated Containment
+    in Security Operations'
+  authors:
+  - family-names: Gentyala
+    given-names: Sunil
+    affiliation: HCLTech (HCL America Inc.), Dallas, TX, USA
+    orcid: https://orcid.org/0009-0005-2642-3479
+    email: sunil.gentyala@ieee.org
+  - family-names: Martin
+    given-names: John
+  - family-names: Caprio
+    given-names: Floriano
+  - family-names: Kasireddy
+    given-names: Hari Rama
+  - family-names: Kasturi
+    given-names: Akhila
+  - family-names: Manoj
+    given-names: Sundarigari
+  collection-title: 2026 IEEE International Conference on Technology Management, Operations
+    and Decisions (ICTMOD)
+  collection-type: proceedings
+  publisher:
+    name: IEEE
+  year: 2026
+  notes: Accepted; IEEE Xplore DOI pending.
