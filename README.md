@@ -21,7 +21,6 @@
 ## Authors
 
 - Primary and corresponding author: Sunil Gentyala
-- Secondary author: Suresh Kumar Darisi
 
 ## What BAIT does
 
